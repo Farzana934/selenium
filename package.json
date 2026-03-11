@@ -5,12 +5,13 @@
   "type": "commonjs",
   "scripts": {
     "start": "node app.js",
-    "test": "jest"
+    "test": "node selenium.test.js",
+    "test:selenium": "node selenium.test.js"
   },
   "dependencies": {
     "express": "^4.21.2"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "selenium-webdriver": "^4.30.0"
   }
 }
