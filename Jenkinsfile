@@ -17,13 +17,18 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            steps {
-                sh '''
-                docker build -t my-k8s-app:${BUILD_NUMBER} .
-                docker tag my-k8s-app:${BUILD_NUMBER} farzanammd123/my-k8s-app:latest
-                '''
-            }
-        }
+    steps {
+        sh '''
+        echo "Switching to Minikube Docker..."
+        eval $(minikube docker-env)
+
+        echo "Building image inside Minikube..."
+        docker build -t farzanammd123/my-k8s-app:latest .
+
+        echo "Done building image"
+        '''
+    }
+}
 
         stage('Push Docker Image') {
     steps {
@@ -61,14 +66,23 @@ pipeline {
     }
 }
 
-        stage('Build Docker Image') {
+        stage('Deploy to Kubernetes') {
     steps {
         sh '''
-        echo "Using Minikube Docker environment..."
-        eval $(minikube docker-env)
+        echo "Loading image into Minikube..."
+        minikube image load farzanammd123/my-k8s-app:latest
 
-        echo "Building image inside Minikube..."
-        docker build -t farzanammd123/my-k8s-app:latest .
+        echo "Applying Kubernetes manifests..."
+        minikube kubectl -- apply -f k8s/deployment.yaml
+        minikube kubectl -- apply -f k8s/service.yaml
+
+        echo "Waiting for pods..."
+        sleep 20
+
+        minikube kubectl -- get pods
+
+        echo "Accessing service..."
+        minikube service my-k8s-app-service
         '''
     }
 }
