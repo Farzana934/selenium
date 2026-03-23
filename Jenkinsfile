@@ -6,7 +6,7 @@ pipeline {
         stage('Checkout from GitHub') {
             steps {
                 git branch: 'master',
-                    url: 'https://github.com/Farzana934/node-k8s-app.git'
+                    url: 'https://github.com/Farzana934/selenium.git'
             }
         }
 
