@@ -62,17 +62,24 @@ pipeline {
 }
 
         stage('Deploy to Kubernetes') {
-            steps {
-                sh '''
-                # Load latest image into Minikube
-                # minikube image load farzanammd123/my-k8s-app:latest
+    steps {
+        sh '''
+        echo "Loading image into Minikube..."
+        minikube image load farzanammd123/my-k8s-app:latest
 
-                # Apply manifests
-                minikube kubectl -- apply -f k8s/deployment.yaml
-                minikube kubectl -- apply -f k8s/service.yaml
-                minikube service my-k8s-app-service
-                '''
-            }
-        }
+        echo "Applying Kubernetes manifests..."
+        minikube kubectl -- apply -f k8s/deployment.yaml
+        minikube kubectl -- apply -f k8s/service.yaml
+
+        echo "Waiting for pods..."
+        sleep 20
+
+        minikube kubectl -- get pods
+
+        echo "Accessing service..."
+        minikube service my-k8s-app-service
+        '''
+    }
+}
     }
 }
