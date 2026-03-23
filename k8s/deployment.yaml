@@ -15,6 +15,6 @@ spec:
       containers:
       - name: my-k8s-app
         image: farzanammd123/my-k8s-app:latest  # your Docker Hub image
-        imagePullPolicy: Never
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
